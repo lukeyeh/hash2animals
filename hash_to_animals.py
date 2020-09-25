@@ -4,7 +4,9 @@ import hashlib
 
 
 def get_animal_names(filename="animals.json"):
-    return json.load(open(filename))['animals'][:128]
+    return list(
+        map(lambda x: x.replace(" ", ""),
+            json.load(open(filename))['animals']))[:128]
 
 
 def number_to_animal(animals):
@@ -22,5 +24,6 @@ if __name__ == '__main__':
 
     animals = get_animal_names()
     n_to_a = number_to_animal(animals)
-    for byte in m.digest()[:3]:
-        print(n_to_a[byte & 0b01111110])
+    animal_hash = [n_to_a[byte & 0b01111110] for byte in m.digest()[:3]]
+
+    print("-".join(animal_hash))
