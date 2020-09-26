@@ -2,7 +2,6 @@ import sys
 import json
 import hashlib
 
-
 def get_animal_names(filename="animals.json"):
     return list(
         map(lambda x: x.replace(" ", ""),
@@ -12,18 +11,20 @@ def get_animal_names(filename="animals.json"):
 def number_to_animal(animals):
     return {i: animals[i] for i in range(128)}
 
+def hash_input(msg):
+    m = hashlib.sha256()
+    m.update(msg.encode('utf-8'))
+    animals = get_animal_names()
+    n_to_a = number_to_animal(animals)
+    animal_hash = [n_to_a[byte & 0b01111110] for byte in m.digest()[:3]]
+
+    print("-".join(animal_hash))
+
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         print("not enough arguments")
         sys.exit(0)
 
-    message = sys.argv[1]
-    m = hashlib.sha256()
-    m.update(message.encode('utf-8'))
-
-    animals = get_animal_names()
-    n_to_a = number_to_animal(animals)
-    animal_hash = [n_to_a[byte & 0b01111110] for byte in m.digest()[:3]]
-
-    print("-".join(animal_hash))
+    hash_input(sys.argv[1])
+    
